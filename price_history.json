@@ -1,0 +1,68 @@
+{
+  "https://amazon.in/dp/B0HJ538NGF": {
+    "base": 183990,
+    "coupon": 0,
+    "full_discount": 3000,
+    "full_offer_text": "Upto \u20b93,000.00 discount on select Credit Cards",
+    "nc_emi_months": "None",
+    "nc_emi_interest_discount": 15879,
+    "nc_emi_banks": "select Credit Cards, HDFC Bank Debit Cards",
+    "net": 180990,
+    "emi_net": 168111
+  },
+  "https://amazon.in/dp/B0DGG84ZZS": {
+    "base": 170990,
+    "coupon": 0,
+    "full_discount": 3000,
+    "full_offer_text": "Upto \u20b93,000.00 discount on select Credit Cards",
+    "nc_emi_months": "None",
+    "nc_emi_interest_discount": 14757,
+    "nc_emi_banks": "select Credit Cards, HDFC Bank Debit Cards",
+    "net": 167990,
+    "emi_net": 156233
+  },
+  "https://amazon.in/dp/B01DLMD5O6": {
+    "base": 19490,
+    "coupon": 0,
+    "full_discount": 3000,
+    "full_offer_text": "Upto \u20b93,000.00 discount on select Credit Cards",
+    "nc_emi_months": "None",
+    "nc_emi_interest_discount": 1957,
+    "nc_emi_banks": "select Credit Cards, HDFC Bank Debit Cards",
+    "net": 16490,
+    "emi_net": 17533
+  },
+  "https://www.amazon.in/dp/B07VTFN6HM": {
+    "base": 11999,
+    "coupon": 0,
+    "full_discount": 1199,
+    "full_offer_text": "Upto \u20b91,199.90 discount on select Credit Cards",
+    "nc_emi_months": "None",
+    "nc_emi_interest_discount": 351,
+    "nc_emi_banks": "select Credit Cards",
+    "net": 10800,
+    "emi_net": 11648
+  },
+  "https://www.flipkart.com/canon-rf-50-mm-f1-8-stm-macro-prime-lens/p/itm5e79c9911e7ba": {
+    "base": 27490,
+    "coupon": 0,
+    "full_discount": 1500,
+    "full_offer_text": "Bank offers",
+    "nc_emi_months": "None",
+    "nc_emi_interest_discount": 0,
+    "nc_emi_banks": "None",
+    "net": 25990,
+    "emi_net": 27490
+  },
+  "https://amzn.in/d/0aBpsjf5": {
+    "base": 183990,
+    "coupon": 0,
+    "full_discount": 3000,
+    "full_offer_text": "Upto \u20b93,000.00 discount on select Credit Cards",
+    "nc_emi_months": "None",
+    "nc_emi_interest_discount": 15879,
+    "nc_emi_banks": "select Credit Cards, HDFC Bank Debit Cards",
+    "net": 180990,
+    "emi_net": 168111
+  }
+}

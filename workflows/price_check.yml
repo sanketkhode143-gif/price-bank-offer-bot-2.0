@@ -1,0 +1,38 @@
+name: 10-Min Price & Bank Offer Agent
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  track-prices:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install curl_cffi beautifulsoup4 requests
+
+      - name: Run Price & Offer Tracker
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python tracker.py
+
+      - name: Save updated products and price history
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Price Tracker Bot"
+          git add products.json price_history.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update products & price history" && git push)
