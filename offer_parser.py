@@ -109,6 +109,19 @@ def parse_product_offers(title: str, page_text: str):
           emi_interest_discount = amount
           emi_interest_note = "No Cost EMI interest discount"
 
+  # Amazon may expose EMI interest savings separately from the EMI card.
+  if not emi_interest_discount:
+    for i, line in enumerate(lines):
+      if EXCLUDED.search(line) or not re.search(r"emi\s+interest\s+savings?", line, re.I):
+        continue
+      amount = _line_amount(line)
+      if not amount and i + 1 < len(lines):
+        amount = _line_amount(lines[i + 1])
+      if amount:
+        emi_interest_discount = amount
+        emi_interest_note = "No Cost EMI interest savings"
+        break
+
   coupon_discount = 0
   for line in lines:
     if re.search(r"coupon|voucher|apply\s+coupon", line, re.I) and not EXCLUDED.search(line):
@@ -140,4 +153,5 @@ def parse_product_offers(title: str, page_text: str):
       "nc_emi_bank_discount": emi_bank_discount,
       "nc_emi_bank_note": emi_bank_note,
   }
+
 
