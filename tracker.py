@@ -131,8 +131,8 @@ def get_page_info(url: str):
       pass
   for script in soup.find_all("script"):
     raw = script.string or script.get_text()
-    if raw and re.search(r"no\s*cost\s*emi|interest\s+discount|credit\s+card", raw, re.I):
-      for match in re.finditer(r"no\s*cost\s*emi|interest\s+discount|credit\s+card", raw, re.I):
+    if raw and re.search(r"no\s*cost\s*emi|interest\s+(?:discount|savings?)|credit\s+card", raw, re.I):
+      for match in re.finditer(r"no\s*cost\s*emi|interest\s+(?:discount|savings?)|credit\s+card", raw, re.I):
         snippet = unescape(raw[max(0, match.start() - 250):match.end() + 400])
         extra_text.append(BeautifulSoup(snippet, "html.parser").get_text(" ", strip=True))
 
