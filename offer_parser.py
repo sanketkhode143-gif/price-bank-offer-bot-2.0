@@ -154,4 +154,3 @@ def parse_product_offers(title: str, page_text: str):
       "nc_emi_bank_note": emi_bank_note,
   }
 
-
