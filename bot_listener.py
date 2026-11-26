@@ -77,7 +77,7 @@ def fetch_and_reply_product(item, products, history):
 
   emi_disc = int(round(float(data.get("nc_emi_interest_discount") or 0)))
   emi_bank_disc = int(round(float(data.get("nc_emi_bank_discount") or 0)))
-  emi_net = max(0, base - coupon - emi_disc - emi_bank_disc)
+  emi_net = max(0, base - coupon - emi_bank_disc)
 
   data["base"] = base
   data["coupon"] = coupon
@@ -125,9 +125,9 @@ def fetch_and_reply_product(item, products, history):
       f"• *Final Net Price:* *{full_net_text}*\n\n"
       f"📅 *No Cost EMI (Excl. Amazon ICICI & Bajaj):*\n"
       f"• *Max No Cost Tenure:* {nc_months}\n"
-      f"• *Interest Discount:* {interest_discount_text}\n"
+      f"• *EMI Interest Savings:* {interest_discount_text}\n"
       f"• *Bank Discount:* {emi_bank_discount_text}\n"
-      f"• *Net Cost (Base - Coupon - Interest - Bank):* *{emi_net_text}*\n\n"
+      f"• *Net Product Price (Base - Coupon - Bank Discount):* *{emi_net_text}*\n\n"
       f"[Open Product Link]({url})"
   )
   send_tg(msg, chat_id=chat_id, reply_to=reply_to)
