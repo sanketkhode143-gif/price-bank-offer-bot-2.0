@@ -101,7 +101,7 @@ def parse_product_offers(title: str, page_text: str):
         emi_bank_discount = _amount(groups[-1]) if groups else 0
         emi_bank_note = card.group(1).strip()
 
-      if re.search(r"interest\s+(?:discount|waiver)|interest\s+saved", line, re.I):
+      if re.search(r"interest\s+(?:discount|waiver|savings?)|interest\s+saved", line, re.I):
         amount = _line_amount(line)
         if not amount and i + 1 < len(region_lines):
           amount = _line_amount(region_lines[i + 1])
