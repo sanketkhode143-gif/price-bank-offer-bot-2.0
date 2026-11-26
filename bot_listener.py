@@ -34,7 +34,43 @@ def save_json(path, data):
     json.dump(data, f, indent=2)
 
 
-def fetch_and_reply_product(item, products, history):
+MANUAL_BANK_RE = re.compile(r"\b(ICICI|HDFC|SBI|Axis|Kotak|IDFC|BOB|HSBC|RBL|Federal|Yes Bank)\b", re.I)
+MANUAL_EMI_RE = re.compile(
+    r"(?:EMI\s*)?₹?\s*([0-9][0-9,]*(?:\.\d{1,2})?)\s*(?:/\s*month\s*)?(?:x|×)\s*(\d{1,2})\s*(?:m|months?)\b",
+    re.I,
+)
+MANUAL_DISCOUNT_RE = re.compile(
+    r"(?:discount|off)\s*[:\-]?\s*₹?\s*([0-9][0-9,]*(?:\.\d{1,2})?)",
+    re.I,
+)
+
+
+def parse_manual_emi(text):
+  """Read explicitly supplied bank EMI lines; never infer them from the URL."""
+  offers = {}
+  for line in (text or "").splitlines():
+    bank_match = MANUAL_BANK_RE.search(line)
+    if not bank_match:
+      continue
+    bank = bank_match.group(1).upper()
+    if bank == "AXIS":
+      bank = "Axis"
+    elif bank == "YES BANK":
+      bank = "Yes Bank"
+    else:
+      bank = bank.title()
+    offer = offers.setdefault(bank, {"bank": bank, "monthly_emi": 0, "months": 0, "discount": 0})
+    emi_match = MANUAL_EMI_RE.search(line)
+    if emi_match:
+      offer["monthly_emi"] = int(round(float(emi_match.group(1).replace(",", ""))))
+      offer["months"] = int(emi_match.group(2))
+    discount_match = MANUAL_DISCOUNT_RE.search(line)
+    if discount_match:
+      offer["discount"] = int(round(float(discount_match.group(1).replace(",", ""))))
+  return [offer for offer in offers.values() if offer["monthly_emi"] or offer["discount"]]
+
+
+def fetch_and_reply_product(item, products, history, manual_emi=None):
   pname = item.get("name", "Product")
   url = item["url"]
   chat_id = item.get("chat_id", DEFAULT_CHAT_ID)
@@ -115,6 +151,18 @@ def fetch_and_reply_product(item, products, history):
       else "Not calculated; offer not found"
   )
 
+  manual_emi_lines = ""
+  if manual_emi:
+    rows = []
+    for offer in manual_emi:
+      row = f"• *{offer['bank']}:* "
+      if offer["monthly_emi"] and offer["months"]:
+        row += f"₹{offer['monthly_emi']:,} × {offer['months']} months"
+      if offer["discount"]:
+        row += f"; discount ₹{offer['discount']:,}"
+      rows.append(row)
+    manual_emi_lines = "\n\n✍️ *EMI details you sent:*\n" + "\n".join(rows)
+
   msg = (
       f"🆕 *INITIAL PRICE & OFFERS*\n\n"
       f"*{pname}*\n"
@@ -129,6 +177,7 @@ def fetch_and_reply_product(item, products, history):
       f"• *Bank Discount:* {emi_bank_discount_text}\n"
       f"• *Net Product Price (Base - Coupon - Bank Discount):* *{emi_net_text}*\n\n"
       f"[Open Product Link]({url})"
+      f"{manual_emi_lines}"
   )
   send_tg(msg, chat_id=chat_id, reply_to=reply_to)
 
@@ -209,7 +258,13 @@ def poll_loop():
             if not raw_url.startswith("http"):
               raw_url = "https://" + raw_url
             cleaned = clean_url(raw_url)
-            custom_name = text.replace(next(iter(urls)), "").strip()
+            details_text = text.replace(next(iter(urls)), "")
+            manual_emi = parse_manual_emi(details_text)
+            name_lines = [
+                line for line in details_text.splitlines()
+                if not MANUAL_BANK_RE.search(line)
+            ]
+            custom_name = re.sub(r"\s+", " ", " ".join(name_lines)).strip()
 
             existing = next((p for p in products if p["url"] == cleaned), None)
             if existing:
@@ -219,7 +274,7 @@ def poll_loop():
                   chat_id=chat_id,
                   reply_to=msg_id,
               )
-              fetch_and_reply_product(existing, products, history)
+              fetch_and_reply_product(existing, products, history, manual_emi)
             else:
               auto_title, _ = get_page_info(cleaned)
               final_name = custom_name if custom_name else auto_title
@@ -239,7 +294,7 @@ def poll_loop():
                   chat_id=chat_id,
                   reply_to=msg_id,
               )
-              fetch_and_reply_product(new_item, products, history)
+              fetch_and_reply_product(new_item, products, history, manual_emi)
 
     except Exception as e:
       print("Listener error:", e, flush=True)
