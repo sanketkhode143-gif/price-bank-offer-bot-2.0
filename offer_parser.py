@@ -8,7 +8,7 @@ import re
 
 
 MONEY = r"(?:₹|Rs\.?\s?|INR\s?)([0-9][0-9,]*(?:\.\d{1,2})?)"
-EXCLUDED = re.compile(r"amazon\s*(?:pay\s*)?(?:icici)|bajaj\s*(?:finserv|finance)", re.I)
+EXCLUDED = re.compile(r"bajaj\s*(?:finserv|finance)", re.I)
 BANK_CARD = re.compile(
     r"\b((?:ICICI|HDFC|SBI|Axis|Kotak|IDFC|BOB|Bank of Baroda|HSBC|RBL|Federal|Yes Bank|Standard Chartered)"
     r"(?:\s+Bank)?\s+(?:Credit|Debit)\s+Card)\b",
