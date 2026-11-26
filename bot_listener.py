@@ -77,7 +77,7 @@ def fetch_and_reply_product(item, products, history, manual_emi=None):
   reply_to = item.get("reply_to")
 
   scraped_title, text = get_page_info(url)
-  if len(text) < 800:
+  if not text or not text.strip():
     send_tg(
         f"⚠️ *Could not read full page details right now* for *{pname}*.\n"
         "Tracker will retry automatically.",
